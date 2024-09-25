@@ -1,0 +1,65 @@
+.app {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar,
+.editor,
+.preview {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #f8f8f8;
+}
+
+.editor {
+  width: 50%;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.preview {
+  width: 30%;
+  background-color: #f0f0f0;
+}
+
+.block-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  cursor: grab;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.block-form {
+  margin-bottom: 20px;
+}
+
+.block-form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.block-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+.preview pre {
+  background-color: #fff;
+  padding: 10px;
+  overflow-x: auto;
+}
+
+.preview button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
