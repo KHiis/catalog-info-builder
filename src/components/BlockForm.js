@@ -1,9 +1,13 @@
 import React from 'react';
+import { Form, Input, Select, Card } from 'antd';
+
+const { Option } = Select;
 
 const BlockForm = ({ block, updateBlockData }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    updateBlockData(block.id, { ...block.data, [name]: value });
+  const [form] = Form.useForm();
+
+  const onValuesChange = (_, allValues) => {
+    updateBlockData(block.id, allValues);
   };
 
   const renderFields = () => {
@@ -11,63 +15,84 @@ const BlockForm = ({ block, updateBlockData }) => {
       case 'Metadata':
         return (
           <>
-            <label>
-              Name:
-              <input
-                type="text"
-                name="name"
-                value={block.data.name || ''}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Description:
-              <input
-                type="text"
-                name="description"
-                value={block.data.description || ''}
-                onChange={handleChange}
-              />
-            </label>
-            {/* Add more metadata fields as needed */}
+            <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Description" name="description">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+            {/* Additional metadata fields like 'annotations' and 'labels' can be added here */}
           </>
         );
       case 'Spec':
         return (
           <>
-            <label>
-              Type:
-              <input
-                type="text"
-                name="type"
-                value={block.data.type || ''}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Lifecycle:
-              <input
-                type="text"
-                name="lifecycle"
-                value={block.data.lifecycle || ''}
-                onChange={handleChange}
-              />
-            </label>
-            {/* Add more spec fields as needed */}
+            <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+              <Select>
+                <Option value="service">Service</Option>
+                <Option value="website">Website</Option>
+                {/* Add more options as per your needs */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Lifecycle" name="lifecycle">
+              <Select>
+                <Option value="experimental">Experimental</Option>
+                <Option value="production">Production</Option>
+                {/* Add more options as per your needs */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Owner" name="owner">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Provides APIs" name="providesApis">
+              <Select mode="tags" placeholder="Enter API names">
+                {/* Tags input for multiple APIs */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Consumes APIs" name="consumesApis">
+              <Select mode="tags" placeholder="Enter API names">
+                {/* Tags input for multiple APIs */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="System" name="system">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Tags" name="tags">
+              <Select mode="tags" placeholder="Enter tags">
+                {/* Tags input for multiple tags */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Subcomponent Of" name="subcomponentOf">
+              <Select mode="tags" placeholder="Enter parent components">
+                {/* Tags input for multiple components */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Depends On Components" name="dependsOnComponents">
+              <Select mode="tags" placeholder="Enter components">
+                {/* Tags input for multiple components */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Depends On Resources" name="dependsOnResources">
+              <Select mode="tags" placeholder="Enter resources">
+                {/* Tags input for multiple resources */}
+              </Select>
+              </Form.Item>
+            {/* Include all other spec.* fields as per the Backstage descriptor format */}
           </>
         );
       case 'Relationships':
         return (
           <>
-            <label>
-              Depends On:
-              <input
-                type="text"
-                name="dependsOn"
-                value={block.data.dependsOn || ''}
-                onChange={handleChange}
-              />
-            </label>
+            <Form.Item label="Depends On" name="dependsOn">
+              <Select mode="tags" placeholder="Enter dependencies">
+                {/* Tags input for multiple dependencies */}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Dependency Of" name="dependencyOf">
+              <Select mode="tags" placeholder="Enter dependents">
+                {/* Tags input for multiple dependents */}
+              </Select>
+            </Form.Item>
             {/* Add more relationship fields as needed */}
           </>
         );
@@ -77,10 +102,16 @@ const BlockForm = ({ block, updateBlockData }) => {
   };
 
   return (
-    <div className="block-form">
-      <h3>{block.name}</h3>
-      {renderFields()}
-    </div>
+    <Card title={block.name} style={{ marginBottom: 20 }}>
+      <Form
+        form={form}
+        layout="vertical"
+        onValuesChange={onValuesChange}
+        initialValues={block.data}
+      >
+        {renderFields()}
+      </Form>
+    </Card>
   );
 };
 

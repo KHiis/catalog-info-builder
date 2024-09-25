@@ -1,6 +1,9 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import BlockForm from './BlockForm';
+import { Typography } from 'antd';
+
+const { Title } = Typography;
 
 const Editor = ({ blocks, setBlocks }) => {
   const [{ isOver }, drop] = useDrop(() => ({
@@ -27,8 +30,12 @@ const Editor = ({ blocks, setBlocks }) => {
   };
 
   return (
-    <div className="editor" ref={drop} style={{ background: isOver ? '#f0f0f0' : '#fff' }}>
-      <h2>Editor</h2>
+    <div
+      className="editor"
+      ref={drop}
+      style={{ background: isOver ? '#e6f7ff' : '#fff', minHeight: '100vh' }}
+    >
+      <Title level={2}>Editor</Title>
       {blocks.map((block) => (
         <BlockForm key={block.id} block={block} updateBlockData={updateBlockData} />
       ))}

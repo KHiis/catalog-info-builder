@@ -1,32 +1,40 @@
 import React from 'react';
 import yaml from 'js-yaml';
+import { Button, Typography } from 'antd';
+
+const { Title } = Typography;
 
 const Preview = ({ blocks }) => {
   const generateYAML = () => {
-    const yamlContent = {};
-
+    const yamlContent = {
+      apiVersion: 'backstage.io/v1alpha1',
+      kind: 'Component',
+      metadata: {},
+      spec: {},
+    };
+  
     blocks.forEach((block) => {
-      switch (block.name) {
-        case 'Metadata':
-          yamlContent.metadata = block.data;
-          break;
-        case 'Spec':
-          yamlContent.spec = block.data;
-          break;
-        case 'Relationships':
-          yamlContent.relationships = block.data;
-          break;
-        default:
-          break;
+      if (block.name === 'Metadata') {
+        yamlContent.metadata = { ...yamlContent.metadata, ...block.data };
+      } else if (block.name === 'Spec') {
+        const data = { ...block.data };
+  
+        // Convert comma-separated strings to arrays for fields that expect arrays
+        ['providesApis', 'consumesApis', 'tags', 'dependsOn', 'dependsOnComponents', 'dependsOnResources', 'subcomponentOf'].forEach((key) => {
+          if (data[key]) {
+            data[key] = Array.isArray(data[key]) ? data[key] : [data[key]];
+          }
+        });
+  
+        yamlContent.spec = { ...yamlContent.spec, ...data };
+      } else if (block.name === 'Relationships') {
+        // Handle relationships if necessary
       }
     });
-
-    // Set default apiVersion and kind if not provided
-    yamlContent.apiVersion = yamlContent.apiVersion || 'backstage.io/v1alpha1';
-    yamlContent.kind = yamlContent.kind || 'Component';
-
+  
     return yaml.dump(yamlContent);
   };
+  
 
   const downloadYAML = () => {
     const element = document.createElement('a');
@@ -39,10 +47,21 @@ const Preview = ({ blocks }) => {
   };
 
   return (
-    <div className="preview">
-      <h2>YAML Preview</h2>
-      <pre>{generateYAML()}</pre>
-      <button onClick={downloadYAML}>Download YAML</button>
+    <div className="preview" style={{ padding: 20 }}>
+      <Title level={2}>YAML Preview</Title>
+      <pre
+        style={{
+          backgroundColor: '#f6f8fa',
+          padding: 20,
+          borderRadius: 4,
+          overflowX: 'auto',
+        }}
+      >
+        {generateYAML()}
+      </pre>
+      <Button type="primary" onClick={downloadYAML} style={{ marginTop: 10 }}>
+        Download YAML
+      </Button>
     </div>
   );
 };

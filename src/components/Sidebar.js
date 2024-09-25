@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { Card } from 'antd';
 
 const BlockItem = ({ name }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -11,9 +12,13 @@ const BlockItem = ({ name }) => {
   }));
 
   return (
-    <div className="block-item" ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <Card
+      ref={drag}
+      style={{ opacity: isDragging ? 0.5 : 1, marginBottom: 10 }}
+      hoverable
+    >
       {name}
-    </div>
+    </Card>
   );
 };
 

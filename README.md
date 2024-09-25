@@ -11,14 +11,10 @@ To deploy this project run
 ```bash
   npm install js-yaml
   npm install react-dnd react-dnd-html5-backend
-```
-
-To be implemented (don't run yet)
-
-```bash
-  npm install antd 
+  npm install antd    
   npm install @ant-design/icons
 ```
+
 
 ### To kickstart the server
 
