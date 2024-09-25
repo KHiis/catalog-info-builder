@@ -8,33 +8,57 @@ const Preview = ({ blocks }) => {
   const generateYAML = () => {
     const yamlContent = {
       apiVersion: 'backstage.io/v1alpha1',
-      kind: 'Component',
+      kind: 'Component', // This can be dynamic if 'kind' is specified in metadata
       metadata: {},
       spec: {},
     };
-  
+
     blocks.forEach((block) => {
       if (block.name === 'Metadata') {
         yamlContent.metadata = { ...yamlContent.metadata, ...block.data };
+        // If 'kind' is specified in metadata, update yamlContent.kind
+        if (block.data.kind) {
+          yamlContent.kind = block.data.kind;
+        }
       } else if (block.name === 'Spec') {
         const data = { ...block.data };
-  
-        // Convert comma-separated strings to arrays for fields that expect arrays
-        ['providesApis', 'consumesApis', 'tags', 'dependsOn', 'dependsOnComponents', 'dependsOnResources', 'subcomponentOf'].forEach((key) => {
+
+        // Convert fields that should be arrays into arrays
+        const arrayFields = [
+          'providesApis',
+          'consumesApis',
+          'tags',
+          'dependsOn',
+          'dependsOnComponents',
+          'dependsOnResources',
+          'subcomponentOf',
+        ];
+
+        arrayFields.forEach((key) => {
           if (data[key]) {
             data[key] = Array.isArray(data[key]) ? data[key] : [data[key]];
           }
         });
-  
+
         yamlContent.spec = { ...yamlContent.spec, ...data };
       } else if (block.name === 'Relationships') {
-        // Handle relationships if necessary
+        const data = { ...block.data };
+
+        // Relationships are specified in 'spec' in the Backstage descriptor format
+        const relationshipFields = ['dependsOn', 'dependencyOf'];
+
+        relationshipFields.forEach((key) => {
+          if (data[key]) {
+            data[key] = Array.isArray(data[key]) ? data[key] : [data[key]];
+            // Add to 'spec' under the appropriate key
+            yamlContent.spec[key] = data[key];
+          }
+        });
       }
     });
-  
+
     return yaml.dump(yamlContent);
   };
-  
 
   const downloadYAML = () => {
     const element = document.createElement('a');
